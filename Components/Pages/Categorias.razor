@@ -1,0 +1,71 @@
+@page "/categorias"
+@rendermode InteractiveServer
+@using LojaBlazor.Models
+
+<PageTitle>Categorias</PageTitle>
+
+<div class="container mt-4">
+    <h2>Categorias</h2>
+    <p class="text-muted">Cadastro de categorias</p>
+
+    <div class="card p-3 shadow-sm mb-4">
+        <EditForm Model="categoria" OnValidSubmit="SalvarCategoria">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label">Nome:</label>
+                <InputText @bind-Value="categoria.Nome" class="form-control" placeholder="Nome da categoria" />
+                <ValidationMessage For="() => categoria.Nome" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Quantidade:</label>
+                <InputNumber @bind-Value="categoria.Quantidade" class="form-control"
+                             ParsingErrorMessage="A quantidade deve ser um número inteiro." />
+                <ValidationMessage For="() => categoria.Quantidade" class="text-danger" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </EditForm>
+    </div>
+
+    @if (categorias.Count == 0)
+    {
+        <div class="alert alert-info">Nenhuma categoria cadastrada ainda.</div>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var c in categorias)
+            {
+                <tr>
+                    <td>@c.Id</td>
+                    <td>@c.Nome</td>
+                    <td>@c.Quantidade</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private CategoriaModel categoria = new();
+    private List<CategoriaModel> categorias = new();
+    private int proximoId = 1;
+
+    private void SalvarCategoria()
+    {
+        categoria.Id = proximoId++;
+        categorias.Add(categoria);
+        categoria = new CategoriaModel();
+    }
+}
